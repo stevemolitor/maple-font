@@ -1,6 +1,6 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono Narrow",
+  "family_name": "Maple Mono Slim",
   "use_hinted": false,
   "pool_size": 4,
   "enable_ligature": true,
@@ -19,7 +19,7 @@
     "extrabold": 800
   },
   "line_height": 1.0,
-  "width": "narrow",
+  "width": "slim",
   "feature_freeze": {
     "cv01": "enable",
     "cv02": "ignore",

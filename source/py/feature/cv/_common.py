@@ -43,6 +43,8 @@ GLYPHS_I = [
     "itilde",
     "idotbelowdotless",
     "iogonekdotless",
+    "i-cy",
+    "yi-cy",
 ]
 
 GLYPHS_L = [
@@ -54,12 +56,20 @@ GLYPHS_L = [
     "lslash",
 ]
 
-GLYPHS_ONE = [
+GLYPHS_1 = [
     "one",
     "one.dnom",
     "one.numr",
     "oneinferior",
     "onesuperior",
+]
+
+GLYPHS_7 = [
+    "seven",
+    "seven.dnom",
+    "seven.numr",
+    "seveninferior",
+    "sevensuperior",
 ]
 
 GLYPHS_G = [
@@ -75,7 +85,8 @@ GLYPHS_G = [
 GLYPHS_J_UPPER = [
     "J",
     "Jcircumflex",
-    "J.bg"
+    "Je-cy",
+    "J.bg",
 ]
 
 GLYPHS_R = [
@@ -83,4 +94,15 @@ GLYPHS_R = [
     "racute",
     "rcaron",
     "rcommaaccent",
+]
+
+GLYPHS_Z_z = [
+    "Z",
+    "Zacute",
+    "Zcaron",
+    "Zdotaccent",
+    "z",
+    "zacute",
+    "zcaron",
+    "zdotaccent",
 ]

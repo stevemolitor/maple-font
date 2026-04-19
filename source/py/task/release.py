@@ -3,41 +3,35 @@ import re
 import shutil
 from typing import Callable
 from fontTools.ttLib import TTFont
-from source.py.task._utils import write_json, write_text
+from source.py.task._utils import write_json, write_text, default_weight_map
 from source.py.utils import joinPaths, run
 from build import main
 
-# Mapping of style names to weights
-weight_map = {
-    "Thin": "100",
-    "ExtraLight": "200",
-    "Light": "300",
-    "Regular": "400",
-    "Italic": "400",
-    "SemiBold": "500",
-    "Medium": "600",
-    "Bold": "700",
-    "ExtraBold": "800",
-}
-
 
 def format_fontsource_name(filename: str):
-    match = re.match(r"MapleMono-(.*)\.(.*)$", filename)
+    match = re.match(r"MapleMono-(.*)\.(.*)$", filename.replace(".ttf", ""))
 
     if not match:
         return None
 
     style = match.group(1)
-
-    weight = weight_map[style.removesuffix("Italic") if style != "Italic" else "Italic"]
-    suf = "italic" if "italic" in filename.lower() else "normal"
+    # Remove 'Italic' only if it is a suffix
+    if style.endswith("Italic") and style != "Italic":
+        base_style = style[:-6]  # Remove 'Italic' (6 chars)
+    else:
+        base_style = style
+    # Fallback to 'Regular' if not found
+    weight = default_weight_map.get(
+        base_style.lower(), default_weight_map.get("regular", 400)
+    )
+    suf = "italic" if "italic" in style.lower() else "normal"
 
     new_filename = f"maple-mono-latin-{weight}-{suf}.{match.group(2)}"
     return new_filename
 
 
 def format_woff2_name(filename: str):
-    return filename.replace(".woff2", "-VF.woff2")
+    return filename.replace(".ttf.woff2", "-VF.woff2")
 
 
 def rename_woff_files(dir: str, fn: Callable[[str], str | None]):
@@ -83,7 +77,7 @@ def write_unicode_map_json(font_path: str, output: str):
     font = TTFont(font_path)
     font_map = {
         format_font_map_key(k): v
-        for k, v in font.getBestCmap().items()
+        for k, v in font.getBestCmap().items()  # type: ignore
         if k is not None
     }
     write_json(output, font_map)

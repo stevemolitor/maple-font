@@ -6,7 +6,6 @@
 @Comma = [comma comma.cv61];
 @Question = [question question.cv62];
 @Uppercase = [A Aacute Abreve Abreveacute Abrevedotbelow Abrevegrave Abrevehookabove Abrevetilde Acaron Acircumflex Acircumflexacute Acircumflexdotbelow Acircumflexgrave Acircumflexhookabove Acircumflextilde Adieresis Adotbelow Agrave Ahookabove Amacron Aogonek Aring Atilde AE AEacute B C Cacute Ccaron Ccedilla Ccircumflex Cdotaccent D Eth Dcaron Dcroat E Eacute Ebreve Ecaron Ecircumflex Ecircumflexacute Ecircumflexdotbelow Ecircumflexgrave Ecircumflexhookabove Ecircumflextilde Edieresis Edotaccent Edotbelow Egrave Ehookabove Emacron Eogonek Eopen Etilde Schwa F G Gacute Gbreve Gcaron Gcircumflex Gcommaaccent Gdotaccent H Hbar Hcircumflex I IJ IJ_acute Iacute Ibreve Icircumflex Idieresis Idotaccent Idotbelow Igrave Ihookabove Imacron Iogonek Itilde J Jcircumflex K Kcommaaccent L Lacute Lcaron Lcommaaccent Ldot Lslash M N Nacute Ncaron Ncommaaccent Ntilde Eng O Oacute Obreve Ocircumflex Ocircumflexacute Ocircumflexdotbelow Ocircumflexgrave Ocircumflexhookabove Ocircumflextilde Odieresis Odotbelow Ograve Ohookabove Ohorn Ohornacute Ohorndotbelow Ohorngrave Ohornhookabove Ohorntilde Ohungarumlaut Omacron Oogonek Oslash Oslashacute Otilde OE P Thorn Q R Racute Rcaron Rcommaaccent S Sacute Scaron Scedilla Scircumflex Scommaaccent Germandbls T Tbar Tcaron Tcedilla Tcommaaccent U Uacute Ubreve Ucircumflex Udieresis Udotbelow Ugrave Uhookabove Uhorn Uhornacute Uhorndotbelow Uhorngrave Uhornhookabove Uhorntilde Uhungarumlaut Umacron Uogonek Uring Utilde V W Wacute Wcircumflex Wdieresis Wgrave X Y Yacute Ycircumflex Ydieresis Ydotbelow Ygrave Yhookabove Ymacron Ytilde Z Zacute Zcaron Zdotaccent A-cy Be-cy Ve-cy Ge-cy Gje-cy Gheupturn-cy Ghestroke-cy De-cy Ie-cy Io-cy Zhe-cy Ze-cy Ii-cy Iishort-cy Ka-cy Kje-cy El-cy Em-cy En-cy O-cy Pe-cy Er-cy Es-cy Te-cy U-cy Ushort-cy Ef-cy Ha-cy Che-cy Tse-cy Sha-cy Shcha-cy Dzhe-cy Softsign-cy Yeru-cy Hardsign-cy Lje-cy Nje-cy Dze-cy E-cy Ereversed-cy I-cy Yi-cy Je-cy Tshe-cy Iu-cy Ia-cy Dje-cy Kadescender-cy Endescender-cy Ustraight-cy Ustraightstroke-cy Chedescender-cy Shha-cy Schwa-cy Zhedieresis-cy Zedieresis-cy Idieresis-cy Odieresis-cy Obarred-cy Chedieresis-cy Alpha Beta Gamma Delta Epsilon Zeta Eta Theta Iota Kappa Lambda Mu Nu Xi Omicron Pi Rho Sigma Tau Upsilon Phi Chi Psi Omega Alphatonos Epsilontonos Etatonos Iotatonos Omicrontonos Upsilontonos Omegatonos Iotadieresis Upsilondieresis KaiSymbol];
-@NormalSeparator = [braceleft braceright bracketleft bracketright parenleft parenright bar slash backslash];
 @Space = [space nbspace];
 @A = [A a a.cv31];
 @B = [B b];
@@ -535,6 +534,8 @@ feature calt {
   lookup greater_greater.liga {
     ignore sub [less slash greater] greater' greater;
     ignore sub greater' greater greater;
+    sub greater' greater dollar by SPC;
+    sub SPC greater' by greater_greater.liga;
     sub @QuoteLike SPC greater' @QuoteLike by greater_greater.liga;
     sub @QuoteLike greater' greater @QuoteLike by SPC;
     sub SPC greater' [slash @Number @EqualHyphen] by greater_greater.liga;
@@ -1009,8 +1010,8 @@ feature calt {
 
   # >=
   lookup greater_equal.liga {
-    ignore sub [greater equal] greater' equal;
-    ignore sub greater' equal [less greater equal exclam SPC @NormalSeparator];
+    ignore sub [greater equal bar] greater' equal;
+    ignore sub greater' equal [less greater equal exclam SPC];
     sub SPC equal' by greater_equal.liga;
     sub greater' equal by SPC;
   } greater_equal.liga;
@@ -1018,7 +1019,7 @@ feature calt {
   # <=
   lookup less_equal.liga {
     ignore sub [less equal] less' equal;
-    ignore sub less' equal [less greater equal exclam SPC @NormalSeparator];
+    ignore sub less' equal [less greater equal exclam bar SPC];
     ignore sub parenleft @Question less' equal;
     sub SPC equal' by less_equal.liga;
     sub less' equal by SPC;
@@ -1125,7 +1126,7 @@ feature calt {
     sub bar' equal by SPC;
   } bar_equal.liga;
 
-  # := =: :=: =:= <=> <==> <== ==> => <=| |=> =<= =>= ======= >=<
+  # <=> <==> <== ==> => <=| |=> =<= =>= ======= >=< := =: :=: =:=
   lookup infinite_equal {
     @EqualStart = [equal.sta.seq equal.mid.seq];
     ignore sub exclam' equal equal;
@@ -1134,15 +1135,15 @@ feature calt {
     ignore sub parenleft @Question less' equal;
     ignore sub parenleft @Question less equal' [less greater bar equal];
     ignore sub parenleft @Question less equal' equal [less greater bar];
-    ignore sub greater' equal [SPC greater];
+    ignore sub greater' equal SPC less_slash.liga;
     ignore sub greater' equal less slash;
-    ignore sub greater' equal equal SPC;
+    ignore sub greater' equal equal SPC less_slash.liga;
     ignore sub greater' equal equal less slash;
-    ignore sub greater' equal equal equal SPC;
+    ignore sub greater' equal equal equal SPC less_slash.liga;
     ignore sub greater' equal equal equal less slash;
-    ignore sub greater equal' equal equal SPC;
+    ignore sub greater equal' equal equal SPC less_slash.liga;
     ignore sub greater equal' equal equal less slash;
-    ignore sub greater equal equal' equal SPC;
+    ignore sub greater equal equal' equal SPC less_slash.liga;
     ignore sub greater equal equal' equal less slash;
     sub [less_equal.sta.seq less_equal.mid.seq greater_equal.sta.seq greater_equal.mid.seq bar_equal.sta.seq bar_equal.mid.seq @EqualStart] equal' [less greater bar equal] by equal.mid.seq;
     sub [less_equal.sta.seq less_equal.mid.seq greater_equal.sta.seq greater_equal.mid.seq bar_equal.sta.seq bar_equal.mid.seq @EqualStart] equal' by equal.end.seq;
@@ -1167,7 +1168,7 @@ feature calt {
   # \\ \' \.
   lookup escape {
 
-    @Escape = [braceleft braceright bracketleft bracketright parenleft parenright less greater period comma hyphen underscore equal plus colon semicolon question exclam at numbersign dollar percent asciicircum ampersand asterisk quotesingle quotedbl slash backslash bar grave asciitilde @Comma @Question];
+    @Escape = [asciicircum dollar quotedbl quotesingle grave period asterisk plus parenleft parenright bracketleft bracketright braceleft braceright bar slash backslash @Question];
     ignore sub backslash.liga backslash' @Escape;
     ignore sub backslash' percent percent;
     sub backslash' @Escape by backslash.liga;
@@ -1179,9 +1180,30 @@ feature calt {
     ignore sub hyphen' hyphen [less greater hyphen bar];
     ignore sub less [numbersign exclam] hyphen' hyphen;
     ignore sub parenleft @Question less exclam hyphen' hyphen;
+    sub bar SPC hyphen' less @Var by hyphen_hyphen.liga;
+    sub bar hyphen' hyphen less @Var by SPC;
+    sub bar SPC hyphen' @Var by hyphen_hyphen.liga;
+    sub bar hyphen' hyphen @Var by SPC;
     sub SPC hyphen' by hyphen_hyphen.liga;
     sub hyphen' hyphen by SPC;
   } hyphen_hyphen.liga;
+
+  # --
+  lookup hyphen_hyphen.liga__REGEX__ {
+    ignore sub [less greater hyphen exclam] hyphen' hyphen less;
+    sub SPC hyphen' less @Var by hyphen_hyphen.liga;
+    sub hyphen' hyphen less @Var by SPC;
+    sub bar SPC hyphen' @Var by hyphen_hyphen.liga;
+    sub bar hyphen' hyphen @Var by SPC;
+  } hyphen_hyphen.liga__REGEX__;
+
+  # >--</
+  lookup hyphen_hyphen.liga__ALT__ {
+    sub greater SPC hyphen' less slash by hyphen_hyphen.liga;
+    sub greater hyphen' hyphen less slash by SPC;
+    sub greater SPC hyphen' SPC less_slash.liga by hyphen_hyphen.liga;
+    sub greater hyphen' hyphen SPC less_slash.liga by SPC;
+  } hyphen_hyphen.liga__ALT__;
 
   # ---
   lookup hyphen_hyphen_hyphen.liga {
@@ -1192,6 +1214,16 @@ feature calt {
     sub SPC hyphen' hyphen by SPC;
     sub hyphen' hyphen hyphen by SPC;
   } hyphen_hyphen_hyphen.liga;
+
+  # >---</
+  lookup hyphen_hyphen_hyphen.liga__ALT__ {
+    sub greater SPC SPC hyphen' less slash by hyphen_hyphen_hyphen.liga;
+    sub greater SPC hyphen' hyphen less slash by SPC;
+    sub greater hyphen' hyphen hyphen less slash by SPC;
+    sub greater SPC SPC hyphen' SPC less_slash.liga by hyphen_hyphen_hyphen.liga;
+    sub greater SPC hyphen' hyphen SPC less_slash.liga by SPC;
+    sub greater hyphen' hyphen hyphen SPC less_slash.liga by SPC;
+  } hyphen_hyphen_hyphen.liga__ALT__;
 
   # <!--
   lookup less_exclam_hyphen_hyphen.liga {
@@ -1225,18 +1257,40 @@ feature calt {
     sub less' exclam hyphen hyphen hyphen hyphen greater by SPC;
   } xml_empty_comment.liga;
 
-  # <-> <--> -> <- --> <-- >-> <-< |-> <-| ------- >- -< >-<
+  # <-> <--> -> <- --> <-- >-> <-< |-> <-| ------- >-- --<
   lookup infinite_hyphen {
     @HyphenStart = [hyphen.sta.seq hyphen.mid.seq];
     ignore sub less' [exclam numbersign] hyphen hyphen;
-    ignore sub bar bar' hyphen;
+    ignore sub [bar plus] bar' hyphen;
+    ignore sub bar' hyphen hyphen @Var;
+    ignore sub bar hyphen' hyphen @Var;
+    ignore sub bar' hyphen hyphen less @Var;
+    ignore sub bar hyphen' hyphen less @Var;
     ignore sub hyphen bar' bar;
     ignore sub hyphen hyphen' bar;
     ignore sub parenleft @Question less exclam hyphen' hyphen;
-    ignore sub greater hyphen' less;
     ignore sub less' hyphen [plus slash @Digit];
-    ignore sub greater' hyphen SPC;
     ignore sub hyphen' less slash;
+    ignore sub greater' hyphen hyphen SPC less_slash.liga;
+    ignore sub greater' hyphen hyphen less slash;
+    ignore sub greater hyphen' hyphen SPC less_slash.liga;
+    ignore sub greater hyphen' hyphen less slash;
+    ignore sub greater' hyphen hyphen hyphen SPC less_slash.liga;
+    ignore sub greater' hyphen hyphen hyphen less slash;
+    ignore sub greater hyphen' hyphen hyphen SPC less_slash.liga;
+    ignore sub greater hyphen' hyphen hyphen less slash;
+    ignore sub greater hyphen hyphen' hyphen SPC less_slash.liga;
+    ignore sub greater hyphen hyphen' hyphen less slash;
+    sub @HyphenStart greater' hyphen by greater_hyphen.mid.seq;
+    sub greater' hyphen [hyphen bar greater] by greater_hyphen.sta.seq;
+    sub greater' hyphen less hyphen by greater_hyphen.sta.seq;
+    ignore sub greater' hyphen;
+    sub [greater_hyphen.mid.seq less_hyphen.sta.seq less_hyphen.mid.seq bar_hyphen.sta.seq bar_hyphen.mid.seq greater_hyphen.sta.seq @HyphenStart] hyphen' less by hyphen.mid.seq;
+    sub hyphen' less hyphen by hyphen.sta.seq;
+    ignore sub hyphen' less;
+    sub greater' hyphen less hyphen by greater_hyphen.sta.seq;
+    sub hyphen greater' hyphen less by greater_hyphen.mid.seq;
+    ignore sub greater' hyphen less;
     sub [less_hyphen.sta.seq less_hyphen.mid.seq greater_hyphen.sta.seq greater_hyphen.mid.seq bar_hyphen.sta.seq bar_hyphen.mid.seq @HyphenStart] hyphen' [less greater bar hyphen] by hyphen.mid.seq;
     sub [less_hyphen.sta.seq less_hyphen.mid.seq greater_hyphen.sta.seq greater_hyphen.mid.seq bar_hyphen.sta.seq bar_hyphen.mid.seq @HyphenStart] hyphen' by hyphen.end.seq;
     sub @HyphenStart less' hyphen by less_hyphen.mid.seq;
@@ -1466,7 +1520,9 @@ feature calt {
 
   # todo))
   lookup tag_todo_alt {
-    ignore sub @Var @T' @O @D @O parenright parenright;
+    ignore sub [parenleft period period_period.liga period_period_period.liga @Comma colon colon_colon.liga asciitilde greater_hyphen.end.seq greater_hyphen.end.seq.cv01 hyphen_greater.liga hyphen_greater.liga.cv01 ampersand ampersand.cv01 dollar dollar.cv01 hyphen hyphen.end.seq @Var] @T' @O @D @O parenright parenright;
+    ignore sub @T' @O @D @O parenright parenright [semicolon parenright period];
+    ignore sub [colon colon_colon.liga comma] @Space @T' @O @D @O parenright parenright;
     sub SPC SPC SPC SPC SPC parenright' by tag_todo.liga;
     sub SPC SPC SPC SPC parenright' parenright by SPC;
     sub SPC SPC SPC @O' parenright parenright by SPC;
@@ -1477,7 +1533,9 @@ feature calt {
 
   # fixme))
   lookup tag_fixme_alt {
-    ignore sub @Var @F' @I @X @M @E parenright parenright;
+    ignore sub [parenleft period period_period.liga period_period_period.liga @Comma colon colon_colon.liga asciitilde greater_hyphen.end.seq greater_hyphen.end.seq.cv01 hyphen_greater.liga hyphen_greater.liga.cv01 ampersand ampersand.cv01 dollar dollar.cv01 hyphen hyphen.end.seq @Var] @F' @I @X @M @E parenright parenright;
+    ignore sub @F' @I @X @M @E parenright parenright [semicolon parenright period];
+    ignore sub [colon colon_colon.liga comma] @Space @F' @I @X @M @E parenright parenright;
     sub SPC SPC SPC SPC SPC SPC parenright' by tag_fixme.liga;
     sub SPC SPC SPC SPC SPC parenright' parenright by SPC;
     sub SPC SPC SPC SPC @E' parenright parenright by SPC;
@@ -1487,63 +1545,63 @@ feature calt {
     sub @F' @I @X @M @E parenright parenright by SPC;
   } tag_fixme_alt;
 
-  # Cl
+  # italic Cl
   lookup C_l.liga {
     ignore sub C' l l;
     sub SPC l' by C_l.liga;
     sub C' l by SPC;
   } C_l.liga;
 
-  # al
+  # italic al
   lookup a_l.liga {
     ignore sub a' l l;
     sub SPC l' by a_l.liga;
     sub a' l by SPC;
   } a_l.liga;
 
-  # cl
+  # italic cl
   lookup c_l.liga {
     ignore sub c' l l;
     sub SPC l' by c_l.liga;
     sub c' l by SPC;
   } c_l.liga;
 
-  # el
+  # italic el
   lookup e_l.liga {
     ignore sub e' l l;
     sub SPC l' by e_l.liga;
     sub e' l by SPC;
   } e_l.liga;
 
-  # il
+  # italic il
   lookup i_l.liga {
     ignore sub i' l l;
     sub SPC l' by i_l.liga;
     sub i' l by SPC;
   } i_l.liga;
 
-  # tl
+  # italic tl
   lookup t_l.liga {
     ignore sub t' l l;
     sub SPC l' by t_l.liga;
     sub t' l by SPC;
   } t_l.liga;
 
-  # ul
+  # italic ul
   lookup u_l.liga {
     ignore sub u' l l;
     sub SPC l' by u_l.liga;
     sub u' l by SPC;
   } u_l.liga;
 
-  # xl
+  # italic xl
   lookup x_l.liga {
     ignore sub x' l l;
     sub SPC l' by x_l.liga;
     sub x' l by SPC;
   } x_l.liga;
 
-  # ff
+  # italic ff
   lookup f_f.liga {
     ignore sub f f' f;
     ignore sub f' f f;
@@ -1551,7 +1609,7 @@ feature calt {
     sub f' f by SPC;
   } f_f.liga;
 
-  # tt
+  # italic tt
   lookup t_t.liga {
     ignore sub t t' t;
     ignore sub t' t [t l];
@@ -1559,7 +1617,7 @@ feature calt {
     sub t' t by SPC;
   } t_t.liga;
 
-  # all
+  # italic all
   lookup a_l_l.liga {
     ignore sub a' l l l;
     sub SPC SPC l' by a_l_l.liga;
@@ -1567,7 +1625,7 @@ feature calt {
     sub a' l l by SPC;
   } a_l_l.liga;
 
-  # ell
+  # italic ell
   lookup e_l_l.liga {
     ignore sub e' l l l;
     sub SPC SPC l' by e_l_l.liga;
@@ -1575,7 +1633,7 @@ feature calt {
     sub e' l l by SPC;
   } e_l_l.liga;
 
-  # ill
+  # italic ill
   lookup i_l_l.liga {
     ignore sub i' l l l;
     sub SPC SPC l' by i_l_l.liga;
@@ -1583,7 +1641,7 @@ feature calt {
     sub i' l l by SPC;
   } i_l_l.liga;
 
-  # ull
+  # italic ull
   lookup u_l_l.liga {
     ignore sub u' l l l;
     sub SPC SPC l' by u_l_l.liga;
@@ -1591,7 +1649,7 @@ feature calt {
     sub u' l l by SPC;
   } u_l_l.liga;
 
-  # ll
+  # italic ll
   lookup l_l.liga {
     ignore sub [C a c e i t u x] l' l;
     ignore sub l' l l;
@@ -1630,6 +1688,32 @@ feature cv01 {
 
 } cv01;
 
+feature cv02 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV02: [Regular Only] Alternative a with top arm, no effect in italic style";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv02;
+
+feature cv03 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV03: [Regular Only] Alternative i without left bottom bar";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv03;
+
 feature cv04 {
 
   cvParameters {
@@ -1664,6 +1748,97 @@ feature cv04 {
   sub u_l_l.liga by u_l_l.liga.cv04;
 
 } cv04;
+
+feature cv05 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV05: [Regular Only] Alternative g in double story style, no effect in italic style";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv05;
+
+feature cv06 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV06: [Regular Only] Alternative i without bottom bar, no effect in italic style";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv06;
+
+feature cv07 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV07: [Regular Only] Alternative J without top bar, no effect in italic style";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv07;
+
+feature cv08 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV08: [Regular Only] Alternative r with bottom bar, no effect in italic style";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv08;
+
+feature cv09 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV09: [Regular Only] Alternative 7 with middle bar, no effect in italic style";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv09;
+
+feature cv10 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV10: [Regular Only] Alternative Z and z with middle bar, no effect in italic style";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv10;
+
+feature cv11 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV11: [Regular Only] Alternative f with bottom bar";
+    };
+  };
+
+  # Placeholder
+  sub EMquad by space;
+
+} cv11;
 
 feature cv31 {
 
@@ -1742,9 +1917,12 @@ feature cv33 {
   sub itilde by itilde.cv33;
   sub idotbelowdotless by idotbelowdotless.cv33;
   sub iogonekdotless by iogonekdotless.cv33;
+  sub i-cy by i-cy.cv33;
+  sub yi-cy by yi-cy.cv33;
   sub j by j.cv33;
   sub jcircumflex by jcircumflex.cv33;
   sub jdotless by jdotless.cv33;
+  sub je-cy by je-cy.cv33;
   sub i_l.liga by i_l.liga.cv33;
   sub i_l_l.liga by i_l_l.liga.cv33;
   sub i_l.liga.cv04 by i_l.liga.cv04.cv33;
@@ -1778,7 +1956,6 @@ feature cv35 {
   sub lcaron by lcaron.cv35;
   sub lcommaaccent by lcommaaccent.cv35;
   sub ldot by ldot.cv35;
-  sub lslash by lslash.cv35;
   sub C_l.liga by C_l.liga.cv35;
   sub a_l.liga by a_l.liga.cv35;
   sub c_l.liga by c_l.liga.cv35;
@@ -1797,7 +1974,6 @@ feature cv35 {
   sub lcaron.cv04 by lcaron.cv35;
   sub lcommaaccent.cv04 by lcommaaccent.cv35;
   sub ldot.cv04 by ldot.cv35;
-  sub lslash.cv04 by lslash.cv35;
   sub C_l.liga.cv04 by C_l.liga.cv35;
   sub a_l.liga.cv04 by a_l.liga.cv35;
   sub c_l.liga.cv04 by c_l.liga.cv35;
@@ -1836,6 +2012,10 @@ feature cv36 {
   };
 
   sub x by x.cv36;
+  sub ha-cy by ha-cy.cv36;
+  sub hadescender-cy by hadescender-cy.cv36;
+  sub hahook-cy by hahook-cy.cv36;
+  sub hastroke-cy by hastroke-cy.cv36;
   sub x_l.liga by x_l.liga.cv36;
   sub x_l.liga.cv04 by x_l.liga.cv04.cv36;
   sub x_l.liga.cv35 by x_l.liga.cv35.cv36;
@@ -1859,6 +2039,11 @@ feature cv37 {
   sub yhookabove by yhookabove.cv37;
   sub ymacron by ymacron.cv37;
   sub ytilde by ytilde.cv37;
+  sub u-cy by u-cy.cv37;
+  sub ushort-cy by ushort-cy.cv37;
+  sub umacron-cy by umacron-cy.cv37;
+  sub udieresis-cy by udieresis-cy.cv37;
+  sub uacutedbl-cy by uacutedbl-cy.cv37;
 
 } cv37;
 
@@ -1904,6 +2089,8 @@ feature cv39 {
   sub itilde by itilde.cv39;
   sub idotbelowdotless by idotbelowdotless.cv39;
   sub iogonekdotless by iogonekdotless.cv39;
+  sub i-cy by i-cy.cv39;
+  sub yi-cy by yi-cy.cv39;
   sub i.cv33 by i.cv39;
   sub iacute.cv33 by iacute.cv39;
   sub ibreve.cv33 by ibreve.cv39;
@@ -1920,6 +2107,8 @@ feature cv39 {
   sub itilde.cv33 by itilde.cv39;
   sub idotbelowdotless.cv33 by idotbelowdotless.cv39;
   sub iogonekdotless.cv33 by iogonekdotless.cv39;
+  sub i-cy.cv33 by i-cy.cv39;
+  sub yi-cy.cv33 by yi-cy.cv39;
   sub i_l.liga by i_l.liga.cv39;
   sub i_l_l.liga by i_l_l.liga.cv39;
   sub i_l.liga.cv04 by i_l.liga.cv04.cv39;
@@ -1943,6 +2132,7 @@ feature cv40 {
 
   sub J by J.cv40;
   sub Jcircumflex by Jcircumflex.cv40;
+  sub Je-cy by Je-cy.cv40;
   sub J.bg by J.bg.cv40;
 
 } cv40;
@@ -1961,6 +2151,56 @@ feature cv41 {
   sub rcommaaccent by rcommaaccent.cv41;
 
 } cv41;
+
+feature cv42 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV42: Alternative italic 7 with middle bar";
+    };
+  };
+
+  sub seven by seven.cv42;
+  sub seven.dnom by seven.dnom.cv42;
+  sub seven.numr by seven.numr.cv42;
+  sub seveninferior by seveninferior.cv42;
+  sub sevensuperior by sevensuperior.cv42;
+
+} cv42;
+
+feature cv43 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV43: Alternative italic Z and z with middle bar";
+    };
+  };
+
+  sub Z by Z.cv43;
+  sub Zacute by Zacute.cv43;
+  sub Zcaron by Zcaron.cv43;
+  sub Zdotaccent by Zdotaccent.cv43;
+  sub z by z.cv43;
+  sub zacute by zacute.cv43;
+  sub zcaron by zcaron.cv43;
+  sub zdotaccent by zdotaccent.cv43;
+
+} cv43;
+
+feature cv44 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV44: Alternative Italic f with bottom bar";
+    };
+  };
+
+  sub f by f.cv44;
+  sub f_f.liga by f_f.liga.cv44;
+  sub f.cv32 by f.cv44;
+  sub f_f.liga.cv32 by f_f.liga.cv44;
+
+} cv44;
 
 feature cv61 {
 
@@ -2040,6 +2280,24 @@ feature cv65 {
   sub ampersand_ampersand_ampersand.liga.cv01 by ampersand_ampersand_ampersand.liga.cv65;
 
 } cv65;
+
+feature cv66 {
+
+  cvParameters {
+    FeatUILabelNameID {
+      name "CV66: Alternative pipe arrows";
+    };
+  };
+
+  sub bar_bar_greater.liga by bar_bar_greater.liga.cv66;
+  sub less_bar_bar.liga by less_bar_bar.liga.cv66;
+  sub less_bar.liga by less_bar.liga.cv66;
+  sub bar_greater.liga by bar_greater.liga.cv66;
+  sub less_bar_greater.liga by less_bar_greater.liga.cv66;
+  sub bar_bar_bar_greater.liga by bar_bar_bar_greater.liga.cv66;
+  sub less_bar_bar_bar.liga by less_bar_bar_bar.liga.cv66;
+
+} cv66;
 
 feature ss01 {
 
@@ -2258,6 +2516,7 @@ feature ss06 {
   sub u_l_l.liga by u_l_l.liga.ss06;
   sub f_f.liga by f_f.liga.ss06;
   sub f_f.liga.cv32 by f_f.liga.cv32.ss06;
+  sub f_f.liga.cv44 by f_f.liga.cv44.ss06;
   sub t_t.liga by t_t.liga.ss06;
 
 } ss06;

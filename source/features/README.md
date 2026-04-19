@@ -29,7 +29,8 @@ Setup in your VSCode settings json file
 4. Choose "Maple Mono NF" in the font menu
 5. Click "Enable Ligatures"
 
-OpenType Features are not supported, you need to custom build to freeze features.
+> [!note]
+> Enabling OpenType Feature is not supported, you need to custom build to freeze features.
 
 ## Ligatures
 
@@ -50,47 +51,47 @@ OpenType Features are not supported, you need to custom build to freeze features
 <tr><td><code>__</code></td><td><code>~-</code></td><td><code>|-&gt;</code></td></tr>
 <tr><td><code>#{</code></td><td><code>~@</code></td><td><code>&lt;-|</code></td></tr>
 <tr><td><code>#[</code></td><td><code>~~~~~~~</code></td><td><code>-------</code></td></tr>
-<tr><td><code>#(</code></td><td><code>0xA12 0x56 1920x1080</code></td><td><code>&gt;-</code></td></tr>
-<tr><td><code>#?</code></td><td><code>&lt;&gt;</code></td><td><code>-&lt;</code></td></tr>
-<tr><td><code>#!</code></td><td><code>&lt;/</code></td><td><code>&gt;-&lt;</code></td></tr>
-<tr><td><code>#:</code></td><td><code>/&gt;</code></td><td><code>&lt;|||</code></td></tr>
-<tr><td><code>#=</code></td><td><code>&lt;/&gt;</code></td><td><code>|||&gt;</code></td></tr>
-<tr><td><code>#_</code></td><td><code>&lt;+</code></td><td><code>&lt;||</code></td></tr>
-<tr><td><code>#__</code></td><td><code>+&gt;</code></td><td><code>||&gt;</code></td></tr>
-<tr><td><code>#_(</code></td><td><code>&lt;+&gt;</code></td><td><code>&lt;|</code></td></tr>
-<tr><td><code>]#</code></td><td><code>&lt;*</code></td><td><code>|&gt;</code></td></tr>
-<tr><td><code>#######</code></td><td><code>*&gt;</code></td><td><code>&lt;|&gt;</code></td></tr>
-<tr><td><code>&lt;&lt;</code></td><td><code>&lt;*&gt;</code></td><td><code>_|_</code></td></tr>
-<tr><td><code>&lt;&lt;&lt;</code></td><td><code>&gt;=</code></td><td><code>[TRACE]</code></td></tr>
-<tr><td><code>&gt;&gt;</code></td><td><code>&lt;=</code></td><td><code>[DEBUG]</code></td></tr>
-<tr><td><code>&gt;&gt;&gt;</code></td><td><code>&lt;=&lt;</code></td><td><code>[INFO]</code></td></tr>
-<tr><td><code>{{</code></td><td><code>&gt;=&gt;</code></td><td><code>[WARN]</code></td></tr>
-<tr><td><code>}}</code></td><td><code>==</code></td><td><code>[ERROR]</code></td></tr>
-<tr><td><code>{|</code></td><td><code>===</code></td><td><code>[FATAL]</code></td></tr>
-<tr><td><code>|}</code></td><td><code>!=</code></td><td><code>[TODO]</code></td></tr>
-<tr><td><code>{{--</code></td><td><code>!==</code></td><td><code>[FIXME]</code></td></tr>
-<tr><td><code>{{!--</code></td><td><code>=/=</code></td><td><code>[NOTE]</code></td></tr>
-<tr><td><code>--}}</code></td><td><code>=!=</code></td><td><code>[HACK]</code></td></tr>
-<tr><td><code>[|</code></td><td><code>|=</code></td><td><code>[MARK]</code></td></tr>
-<tr><td><code>|]</code></td><td><code>:=</code></td><td><code>[EROR]</code></td></tr>
-<tr><td><code>!!</code></td><td><code>=:</code></td><td><code>[WARNING]</code></td></tr>
-<tr><td><code>||</code></td><td><code>:=:</code></td><td><code>todo))</code></td></tr>
-<tr><td><code>??</code></td><td><code>=:=</code></td><td><code>fixme))</code></td></tr>
-<tr><td><code>???</code></td><td><code>&lt;=&gt;</code></td><td><code>Cl</code></td></tr>
-<tr><td><code>&amp;&amp;</code></td><td><code>&lt;==&gt;</code></td><td><code>al</code></td></tr>
-<tr><td><code>&amp;&amp;&amp;</code></td><td><code>&lt;==</code></td><td><code>cl</code></td></tr>
-<tr><td><code>//</code></td><td><code>==&gt;</code></td><td><code>el</code></td></tr>
-<tr><td><code>///</code></td><td><code>=&gt;</code></td><td><code>il</code></td></tr>
-<tr><td><code>/*</code></td><td><code>&lt;=|</code></td><td><code>tl</code></td></tr>
-<tr><td><code>/**</code></td><td><code>|=&gt;</code></td><td><code>ul</code></td></tr>
-<tr><td><code>*/</code></td><td><code>=&lt;=</code></td><td><code>xl</code></td></tr>
-<tr><td><code>++</code></td><td><code>=&gt;=</code></td><td><code>ff</code></td></tr>
-<tr><td><code>+++</code></td><td><code>=======</code></td><td><code>tt</code></td></tr>
-<tr><td><code>;;</code></td><td><code>&gt;=&lt;</code></td><td><code>all</code></td></tr>
-<tr><td><code>;;;</code></td><td><code>\\ \&#x27; \.</code></td><td><code>ell</code></td></tr>
-<tr><td><code>..</code></td><td><code>--</code></td><td><code>ill</code></td></tr>
-<tr><td><code>...</code></td><td><code>---</code></td><td><code>ull</code></td></tr>
-<tr><td><code>.?</code></td><td><code>&lt;!--</code></td><td><code>ll</code></td></tr>
+<tr><td><code>#(</code></td><td><code>0xA12 0x56 1920x1080</code></td><td><code>&gt;--</code></td></tr>
+<tr><td><code>#?</code></td><td><code>&lt;&gt;</code></td><td><code>--&lt;</code></td></tr>
+<tr><td><code>#!</code></td><td><code>&lt;/</code></td><td><code>&lt;|||</code></td></tr>
+<tr><td><code>#:</code></td><td><code>/&gt;</code></td><td><code>|||&gt;</code></td></tr>
+<tr><td><code>#=</code></td><td><code>&lt;/&gt;</code></td><td><code>&lt;||</code></td></tr>
+<tr><td><code>#_</code></td><td><code>&lt;+</code></td><td><code>||&gt;</code></td></tr>
+<tr><td><code>#__</code></td><td><code>+&gt;</code></td><td><code>&lt;|</code></td></tr>
+<tr><td><code>#_(</code></td><td><code>&lt;+&gt;</code></td><td><code>|&gt;</code></td></tr>
+<tr><td><code>]#</code></td><td><code>&lt;*</code></td><td><code>&lt;|&gt;</code></td></tr>
+<tr><td><code>#######</code></td><td><code>*&gt;</code></td><td><code>_|_</code></td></tr>
+<tr><td><code>&lt;&lt;</code></td><td><code>&lt;*&gt;</code></td><td><code>[TRACE]</code></td></tr>
+<tr><td><code>&lt;&lt;&lt;</code></td><td><code>&gt;=</code></td><td><code>[DEBUG]</code></td></tr>
+<tr><td><code>&gt;&gt;</code></td><td><code>&lt;=</code></td><td><code>[INFO]</code></td></tr>
+<tr><td><code>&gt;&gt;&gt;</code></td><td><code>&lt;=&lt;</code></td><td><code>[WARN]</code></td></tr>
+<tr><td><code>{{</code></td><td><code>&gt;=&gt;</code></td><td><code>[ERROR]</code></td></tr>
+<tr><td><code>}}</code></td><td><code>==</code></td><td><code>[FATAL]</code></td></tr>
+<tr><td><code>{|</code></td><td><code>===</code></td><td><code>[TODO]</code></td></tr>
+<tr><td><code>|}</code></td><td><code>!=</code></td><td><code>[FIXME]</code></td></tr>
+<tr><td><code>{{--</code></td><td><code>!==</code></td><td><code>[NOTE]</code></td></tr>
+<tr><td><code>{{!--</code></td><td><code>=/=</code></td><td><code>[HACK]</code></td></tr>
+<tr><td><code>--}}</code></td><td><code>=!=</code></td><td><code>[MARK]</code></td></tr>
+<tr><td><code>[|</code></td><td><code>|=</code></td><td><code>[EROR]</code></td></tr>
+<tr><td><code>|]</code></td><td><code>&lt;=&gt;</code></td><td><code>[WARNING]</code></td></tr>
+<tr><td><code>!!</code></td><td><code>&lt;==&gt;</code></td><td><code>todo))</code></td></tr>
+<tr><td><code>||</code></td><td><code>&lt;==</code></td><td><code>fixme))</code></td></tr>
+<tr><td><code>??</code></td><td><code>==&gt;</code></td><td><code><em>Cl</em></code></td></tr>
+<tr><td><code>???</code></td><td><code>=&gt;</code></td><td><code><em>al</em></code></td></tr>
+<tr><td><code>&amp;&amp;</code></td><td><code>&lt;=|</code></td><td><code><em>cl</em></code></td></tr>
+<tr><td><code>&amp;&amp;&amp;</code></td><td><code>|=&gt;</code></td><td><code><em>el</em></code></td></tr>
+<tr><td><code>//</code></td><td><code>=&lt;=</code></td><td><code><em>il</em></code></td></tr>
+<tr><td><code>///</code></td><td><code>=&gt;=</code></td><td><code><em>tl</em></code></td></tr>
+<tr><td><code>/*</code></td><td><code>=======</code></td><td><code><em>ul</em></code></td></tr>
+<tr><td><code>/**</code></td><td><code>&gt;=&lt;</code></td><td><code><em>xl</em></code></td></tr>
+<tr><td><code>*/</code></td><td><code>:=</code></td><td><code><em>ff</em></code></td></tr>
+<tr><td><code>++</code></td><td><code>=:</code></td><td><code><em>tt</em></code></td></tr>
+<tr><td><code>+++</code></td><td><code>:=:</code></td><td><code><em>all</em></code></td></tr>
+<tr><td><code>;;</code></td><td><code>=:=</code></td><td><code><em>ell</em></code></td></tr>
+<tr><td><code>;;;</code></td><td><code>\\ \&#x27; \.</code></td><td><code><em>ill</em></code></td></tr>
+<tr><td><code>..</code></td><td><code>--</code></td><td><code><em>ull</em></code></td></tr>
+<tr><td><code>...</code></td><td><code>---</code></td><td><code><em>ll</em></code></td></tr>
+<tr><td><code>.?</code></td><td><code>&lt;!--</code></td><td></td></tr>
 </table>
 <!-- CALT -->
 
@@ -111,28 +112,35 @@ OpenType Features are not supported, you need to custom build to freeze features
 - [v7.1] cv06: Alternative `i` without bottom bar, no effect in italic style
 - [v7.1] cv07: Alternative `J` without top bar, no effect in italic style
 - [v7.1] cv08: Alternative `r` with bottom bar, no effect in italic style
+- [v7.5] cv09: Alternative `7` with middle bar, no effect in italic style
+- [v7.5] cv10: Alternative `Z` and `z` with middle bar, no effect in italic style
+- [v7.7] cv11: Alternative `f` with bottom bar
 - [v7.1] cv61: Alternative `,` and `;` with straight tail
 - [v7.1] cv62: Alternative `?` with larger openings
 - [v7.1] cv63: Alternative `<=` in arrow style
 - [v7.3] cv64: Alternative `<=` and `>=` with horizen bottom bar
 - [v7.3] cv65: Alternative `&` in handwriting style
+- [v7.8] cv66: Alternative pipe arrows
 - [v7.0] zero: Dot style `0`
 <!-- CV -->
 
 #### Italic Only
 
 <!-- CV-IT -->
-- [v7.0] cv31: Alternative italic `a` with top arm
-- [v7.0] cv32: Alternative Italic `f` without bottom tail
-- [v7.0] cv33: Alternative Italic `i` and `j` with left bottom bar and horizen top bar
-- [v7.0] cv34: Alternative Italic `k` without center circle
-- [v7.0] cv35: Alternative Italic `l` without center tail
-- [v7.0] cv36: Alternative Italic `x` without top and bottom tails
-- [v7.0] cv37: Alternative Italic `y` with straight intersection
-- [v7.1] cv38: Alternative italic `g` in double story style
-- [v7.1] cv39: Alternative Italic `i` without bottom bar
-- [v7.1] cv40: Alternative italic `J` without top bar
-- [v7.1] cv41: Alternative italic `r` with bottom bar
+- [v7.0] cv31: Alternative italic _`a`_ with top arm
+- [v7.0] cv32: Alternative Italic _`f`_ without bottom tail
+- [v7.0] cv33: Alternative Italic _`i`_ and _`j`_ with left bottom bar and horizen top bar
+- [v7.0] cv34: Alternative Italic _`k`_ without center circle
+- [v7.0] cv35: Alternative Italic _`l`_ without center tail
+- [v7.0] cv36: Alternative Italic _`x`_ without top and bottom tails
+- [v7.0] cv37: Alternative Italic _`y`_ with straight intersection
+- [v7.1] cv38: Alternative italic _`g`_ in double story style
+- [v7.1] cv39: Alternative Italic _`i`_ without bottom bar
+- [v7.1] cv40: Alternative italic _`J`_ without top bar
+- [v7.1] cv41: Alternative italic _`r`_ with bottom bar
+- [v7.5] cv42: Alternative italic _`7`_ with middle bar
+- [v7.5] cv43: Alternative italic _`Z`_ and _`z`_ with middle bar
+- [v7.7] cv44: Alternative Italic _`f`_ with bottom bar
 <!-- CV-IT -->
 
 #### CN Only
@@ -152,7 +160,7 @@ OpenType Features are not supported, you need to custom build to freeze features
 - [v7.0] ss03: Allow to use any case in all tags
 - [v7.0] ss04: Broken multiple underscores ligatures (`__`, `#__`)
 - [v7.0] ss05: Revert thin backslash in escape symbols (`\\`, `\"`, `\.` ...)
-- [v7.0] ss06: Break connected strokes between italic letters (`al`, `il`, `ull` ...)
+- [v7.0] ss06: Break connected strokes between italic letters (_`al`_, _`il`_, _`ull`_ ...)
 - [v7.0] ss07: Relax the conditions for multiple greaters ligatures (`>>` or `>>>`)
 - [v7.0] ss08: Double headed arrows and reverse arrows ligatures (`>>=`, `-<<`, `->>`, `>>-` ...)
 - [v7.1] ss09: Asciitilde equal as not equal to ligature (`~=`)

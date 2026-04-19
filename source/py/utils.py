@@ -5,29 +5,12 @@ import shutil
 import subprocess
 from urllib.request import Request, urlopen
 from zipfile import ZIP_DEFLATED, ZipFile
-from fontTools.ttLib import TTFont
+from fontTools.ttLib import TTFont, newTable
 from fontTools.merge import Merger
-from glyphsLib import GSFont
+from source.py.task._utils import is_ci, default_weight_map
 
 
-def is_ci():
-    ci_envs = [
-        "JENKINS_HOME",
-        "TRAVIS",
-        "CIRCLECI",
-        "GITHUB_ACTIONS",
-        "GITLAB_CI",
-        "TF_BUILD",
-    ]
-
-    for env in ci_envs:
-        if environ.get(env):
-            return True
-
-    return False
-
-
-def run(command, extra_args=None, log=not is_ci()):
+def run(command: str | list[str], extra_args: list[str] | None = None, log=not is_ci()):
     """
     Run a command line interface (CLI) command.
     """
@@ -38,13 +21,15 @@ def run(command, extra_args=None, log=not is_ci()):
     subprocess.run(
         command + extra_args,
         stdout=subprocess.DEVNULL if not log else None,
+        stderr=subprocess.DEVNULL if not log else None,
         check=True,
     )
 
 
-def set_font_name(font: TTFont, name: str, id: int):
-    font["name"].setName(name, nameID=id, platformID=1, platEncID=0, langID=0x0)  # type: ignore
+def set_font_name(font: TTFont, name: str, id: int, mac: bool | None = None):
     font["name"].setName(name, nameID=id, platformID=3, platEncID=1, langID=0x409)  # type: ignore
+    if mac:
+        font["name"].setName(name, nameID=id, platformID=1, platEncID=0, langID=0x0)  # type: ignore
 
 
 def get_font_name(font: TTFont, id: int) -> str:
@@ -187,6 +172,12 @@ def download_cn_base_font(
 
 
 def match_unicode_names(file_path: str) -> dict[str, str]:
+    try:
+        from glyphsLib import GSFont
+    except ImportError:
+        print("❗ glyphsLib is not found. Please run `pip install glyphsLib`")
+        exit(1)
+
     font = GSFont(file_path)
     result = {}
 
@@ -205,24 +196,26 @@ def match_unicode_names(file_path: str) -> dict[str, str]:
 def verify_glyph_width(
     font: TTFont, expect_widths: list[int], file_name: str | None = None
 ):
-    print("Verify glyph width")
     result = []
     for name in font.getGlyphNames():
         width, _ = font["hmtx"][name]  # type: ignore
         if width not in expect_widths:
             result.append([name, width])
 
-    if result.__len__() > 0:
-        print(f"Every glyph's width should be in {expect_widths}, but these are not:")
-        for item in result:
-            print(f"{item[0]}  =>  {item[1]}")
+    if result.__len__() == 0:
+        print(f"✅ Verified glyph width in {file_name}")
+        return
 
-        raise Exception(
-            f"{file_name or 'The font'} may contain glyphs that width is not in {expect_widths}, which may broke monospace rule."
-        )
+    unexpected_glyphs = "\n".join(
+        [f"{item[0]}  =>  {item[1]}" for item in result[1:20]]
+    )
+
+    raise Exception(
+        f"{file_name or 'The font'} may contains glyphs that width is not in {expect_widths}, which may broke monospace rule.\n{unexpected_glyphs}"
+    )
 
 
-def compress_folder(
+def archive_fonts(
     source_file_or_dir_path: str,
     target_parent_dir_path: str,
     family_name_compact: str,
@@ -377,3 +370,263 @@ def merge_ttfonts(
     except Exception as e:
         print(f"Error merging fonts: {str(e)}")
         raise
+
+
+def add_ital_axis_to_stat(font: TTFont):
+    """
+    Add fake ``ital`` axis to append "italic" to subfamily name in italic variable font
+    """
+    from fontTools.ttLib.tables import otTables as ot
+
+    name = font["name"]
+    stat_table = font["STAT"].table  # type: ignore
+
+    # Add fake axis name
+    id = name._findUnusedNameID()  # type: ignore
+    set_font_name(font, "Italic", id, True)
+
+    # Add AxisRecord
+    axis = ot.AxisRecord()  # type: ignore
+    axis.AxisTag = "ital"
+    axis.AxisOrdering = len(stat_table.DesignAxisRecord.Axis)
+    axis.AxisNameID = id
+    stat_table.DesignAxisRecord.Axis.append(axis)
+    stat_table.DesignAxisCount += 1
+
+    # Add AxisValue
+    axisValRec = ot.AxisValue()  # type: ignore
+    axisValRec.AxisIndex = axis.AxisOrdering
+    axisValRec.Flags = 0
+    axisValRec.Format = 1
+    axisValRec.ValueNameID = id
+    axisValRec.Value = 1.0
+    stat_table.AxisValueArray.AxisValue.append(axisValRec)
+    stat_table.AxisValueCount += 1
+
+
+def adjust_line_height(
+    font: TTFont, factor: float, metric: tuple[float, float]
+) -> None:
+    """
+    Adjust the line height of the font by modifying the hhea and OS/2 table.
+    """
+
+    if "hhea" not in font:
+        raise ValueError("No hhea table found.")
+    if "OS/2" not in font:
+        raise ValueError("No OS/2 table found.")
+
+    head = font["head"]
+    hhea = font["hhea"]
+    os2 = font["OS/2"]
+
+    asc, desc = metric
+    # Maintain original ascender/descender ratio
+    ascender_ratio = asc / (asc - desc)  # type: ignore
+    # Calculate target total height
+    target_total_height = int(round(factor * (asc - desc)))
+
+    # Calculate new metrics
+    new_ascender = int(round(target_total_height * ascender_ratio))
+    new_descender = new_ascender - target_total_height
+
+    print(f"Change vertical metric to [{new_ascender}, {new_descender}]")
+
+    # Apply changes to hhea table
+    head.yMax = new_ascender  # type: ignore
+    head.yMin = new_descender  # type: ignore
+    hhea.ascent = new_ascender  # type: ignore
+    hhea.descent = new_descender  # type: ignore
+    os2.sTypoAscender = new_ascender  # type: ignore
+    os2.sTypoDescender = new_descender  # type: ignore
+    os2.usWinAscent = new_ascender  # type: ignore
+    os2.usWinDescent = -new_descender  # type: ignore
+
+
+def patch_instance(font: TTFont, all_weight_map: dict[str, int]):
+    if all_weight_map == default_weight_map:
+        print("Skip weight remapping since nothing changed.")
+        return
+
+    if "fvar" not in font or "STAT" not in font:
+        return
+
+    if all_weight_map["thin"] != 100:
+        raise Exception("Font weight of `thin` must be 100")
+
+    if all_weight_map["extrabold"] != 800:
+        raise Exception("Font weight of `extrabold` must be 800")
+
+    value_to_name = {v: k for k, v in default_weight_map.items()}
+
+    for instance in font["fvar"].instances:  # type: ignore
+        current_weight = int(instance.coordinates["wght"])
+        weight_name = value_to_name.get(current_weight)
+        if weight_name and weight_name in all_weight_map:
+            instance.coordinates["wght"] = all_weight_map[weight_name]
+
+    axes = font["fvar"].axes  # type: ignore
+    wght_index = next((i for i, ax in enumerate(axes) if ax.axisTag == "wght"), None)
+    if wght_index is None:
+        return
+
+    stat = font["STAT"].table  # type: ignore
+    if not stat.AxisValueArray:
+        return
+
+    handlers = {
+        1: lambda av: patch_single_value(av, "Value"),
+        2: lambda av: patch_range_value(av),
+        3: lambda av: (
+            patch_single_value(av, "Value"),
+            patch_single_value(av, "LinkedValue"),
+        ),
+        4: lambda av: [
+            patch_single_value(rec, "Value")
+            for rec in av.AxisValueRecord
+            if rec.AxisIndex == wght_index
+        ],
+    }
+
+    def patch_single_value(obj, attr: str) -> None:
+        current_value = int(getattr(obj, attr))
+        weight_name = value_to_name.get(current_value)
+        if weight_name and weight_name in all_weight_map:
+            setattr(obj, attr, all_weight_map[weight_name])
+
+    def patch_range_value(av) -> None:
+        current_value = int(av.NominalValue)
+        weight_name = value_to_name.get(current_value)
+        if weight_name and weight_name in all_weight_map:
+            new_value = all_weight_map[weight_name]
+            delta = new_value - av.NominalValue
+            av.RangeMinValue += delta
+            av.RangeMaxValue += delta
+            av.NominalValue = new_value
+
+    for av in stat.AxisValueArray.AxisValue:
+        fmt = av.Format
+        if fmt not in handlers or (fmt != 4 and av.AxisIndex != wght_index):
+            continue
+        handlers[fmt](av)
+
+
+def add_gasp(font: TTFont):
+    print("Fix GASP table")
+    gasp = newTable("gasp")
+    gasp.gaspRange = {65535: 15}  # type: ignore
+    font["gasp"] = gasp
+
+
+def remove_target_glyph(font: TTFont, glyph_name_suffix: str):
+    """
+    Remove glyphs from the font that end with the specified suffix.
+    """
+    from fontTools.subset import Subsetter, Options
+
+    keep_glyphs = [n for n in font.getGlyphOrder() if not n.endswith(glyph_name_suffix)]
+    subsetter = Subsetter(Options(hinting=False))
+    subsetter.populate(glyphs=keep_glyphs)
+    subsetter.subset(font)
+
+
+def parse_style_name(style_name_compact: str):
+    is_italic = style_name_compact.endswith("Italic")
+
+    _style_name = style_name_compact
+    if is_italic and style_name_compact[0] != "I":
+        _style_name = style_name_compact[:-6] + " Italic"
+
+    # In these subfamilies:
+    #   - NameID1 should be the family name
+    #   - NameID2 should be the subfamily name
+    #   - NameID16 and NameID17 should be removed
+    # Other subfamilies:
+    #   - NameID1 should be the family name, append with subfamily name without "Italic"
+    #   - NameID2 should be the "Regular" or "Italic"
+    #   - NameID16 should be the family name
+    #   - NameID17 should be the subfamily name
+    # https://github.com/subframe7536/maple-font/issues/182
+    # https://github.com/subframe7536/maple-font/issues/183
+    #
+    # same as `ftcli assistant commit . --ls 400 700`
+    # https://github.com/ftCLI/FoundryTools-CLI/issues/166#issuecomment-2095756721
+    base_subfamily_list = ["Regular", "Bold", "Italic", "BoldItalic"]
+    if style_name_compact in base_subfamily_list:
+        return "", _style_name, _style_name, True, is_italic
+    else:
+        return (
+            " " + style_name_compact.replace("Italic", ""),
+            "Italic" if is_italic else "Regular",
+            _style_name,
+            False,
+            is_italic,
+        )
+
+
+def update_font_names(
+    font: TTFont,
+    family_name: str,  # NameID 1
+    style_name: str,  # NameID 2
+    unique_identifier: str,  # NameID 3
+    full_name: str,  # NameID 4
+    version_str: str,  # NameID 5
+    postscript_name: str,  # NameID 6
+    is_skip_subfamily: bool,
+    preferred_family_name: str | None = None,  # NameID 16
+    preferred_style_name: str | None = None,  # NameID 17
+):
+    font["name"].removeNames(platformID=1)  # type: ignore
+    # Reported in #598
+    # Why: https://github.com/ryanoasis/nerd-fonts/discussions/891#discussioncomment-3471991
+    if len(family_name) > 31:
+        print(
+            f"⚠️ The family name [{family_name}] is too long (> 31) for some old Windows softwares"
+        )
+    set_font_name(font, family_name, 1)
+    set_font_name(font, style_name, 2)
+    set_font_name(font, unique_identifier, 3)
+    set_font_name(font, full_name, 4)
+    set_font_name(font, version_str, 5)
+    set_font_name(font, postscript_name, 6)
+
+    if not is_skip_subfamily and preferred_family_name and preferred_style_name:
+        set_font_name(font, preferred_family_name, 16)
+        set_font_name(font, preferred_style_name, 17)
+
+
+DEFAULT_COMPAT_ALIASES: dict[int, int] = {
+    0x2126: 0x03A9,  # Ω → Ω
+    0x212A: 0x004B,  # K → K
+    0x212B: 0x00C5,  # Å → Å
+}
+
+
+def alias_codepoints(font: TTFont, mapping: dict[int, int] | None = None):
+    """
+    Add cmap aliases: src_codepoint → dst_codepoint
+    """
+    if mapping is None:
+        mapping = DEFAULT_COMPAT_ALIASES
+
+    cmap_tables = font["cmap"].tables  # type: ignore
+
+    dst_glyphs: dict[int, str] = {}
+    for src, dst in mapping.items():
+        glyph = None
+        for table in cmap_tables:
+            if not table.isUnicode():
+                continue
+            if dst in table.cmap:
+                glyph = table.cmap[dst]
+                break
+        if glyph is None:
+            continue
+        dst_glyphs[src] = glyph
+
+    for table in cmap_tables:
+        if not table.isUnicode():
+            continue
+        cmap = table.cmap
+        for src, glyph in dst_glyphs.items():
+            cmap[src] = glyph

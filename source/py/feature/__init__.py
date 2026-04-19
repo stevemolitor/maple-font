@@ -1,10 +1,12 @@
 from copy import deepcopy
 from html import escape
 import json
+import re
 from source.py.feature import ast
 from source.py.feature.base import get_base_feature_cn_only, get_base_features
 from source.py.feature.base.lang import get_lang_list
 from source.py.feature.calt import get_calt, get_calt_lookup
+from source.py.feature.calt._infinite_utils import infinite_helper
 from source.py.feature.cv import cv96, cv97, cv98, cv99
 from source.py.feature.regular import (
     cls_var,
@@ -35,7 +37,7 @@ normal_enabled_features = [
 ]
 
 
-cv_list_cn = [
+cv_list_cn: list[ast.FeatureWithDocs] = [
     cv96.cv96_feat_cn,
     cv97.cv97_feat_cn,
     cv98.cv98_feat_cn,
@@ -48,7 +50,10 @@ def generate_fea_string(
     is_cn: bool,
     is_normal: bool = False,
     is_calt: bool = True,
+    enable_infinite: bool = True,
+    enable_tag: bool = True,
     variable_enabled_feature_list: list[str] | None = None,
+    remove_italic_calt: bool = False,
 ):
     """
     Generates feature string.
@@ -63,20 +68,27 @@ def generate_fea_string(
         is_calt (bool): Whether to enable calt
         variable_enabled_feature_list (list[str]): List of features that
             be enabled in variable format
+        infinite (bool): Whether to add infinite arrow ligatures
     """
     print(
-        f"Generating feature string with italic={is_italic}, cn={is_cn}, normal={is_normal}, calt={is_calt}, variable={bool(variable_enabled_feature_list)}"
+        f"Generating feature string with italic={is_italic}, cn={is_cn}, normal={is_normal}, calt={is_calt}, variable={bool(variable_enabled_feature_list)}, infinite={enable_infinite}, tag={enable_tag}"
     )
+    infinite_helper.set(enable_infinite)
 
     class_list = class_list_italic if is_italic else class_list_regular
-    cv_list = cv_list_italic if is_italic else cv_list_regular
-    ss_list = ss_list_italic if is_italic else ss_list_regular
+    cv_list = cv_list_italic(True) if is_italic else cv_list_regular(True)
+    ss_list = ss_list_italic(True) if is_italic else ss_list_regular(True)
 
     if class_list[-2].name != "Var" or class_list[-1].name != "HexLetter":
         raise TypeError("Invalid class_list, must ends with [@Var, @HexLetter]")
 
     calt_feat = get_calt(
-        class_list[-2], class_list[-1], is_italic=is_italic, is_normal=is_normal
+        cls_var=class_list[-2],
+        cls_hex_letter=class_list[-1],
+        is_italic=is_italic,
+        is_normal=is_normal,
+        enable_tag=enable_tag,
+        remove_italic_calt=remove_italic_calt,
     )
 
     # clear calt for no ligature
@@ -89,7 +101,7 @@ def generate_fea_string(
     if variable_enabled_feature_list:
         extracted_lookup_list = []
         for feat in cv_ss_list:
-            if feat.tag in variable_enabled_feature_list or []:
+            if feat.tag in variable_enabled_feature_list:
                 # prevent features that add ligatures like `ss08`
                 if not is_calt and feat.has_lookup:
                     continue
@@ -105,9 +117,9 @@ def generate_fea_string(
 
         calt_feat.content.extend(extracted_lookup_list)
 
-    # remove calt if empty, to prevent fonttools warning
+    # Add placeholder to calt if empty, to prevent fonttools warning
     if not calt_feat.content:
-        calt_feat = None
+        calt_feat.content = ast.EMPTY_FEAT_CONTENT
 
     return ast.create(
         [
@@ -135,9 +147,9 @@ def get_all_calt_text():
         if isinstance(item, ast.Lookup) and item.desc:
             if item.name == "escape":
                 result.append(item.desc.replace("\\ ", "\\\\ "))
-            elif item.name.startswith('infinite'):
-                result.extend(item.desc.split(' '))
-            elif not item.name.endswith("__ALT__"):
+            elif item.name.startswith("infinite"):
+                result.extend(item.desc.split(" "))
+            elif not item.name.endswith("__"):
                 result.append(item.desc)
 
     # Split into three columns
@@ -146,8 +158,14 @@ def get_all_calt_text():
     # Create HTML table with three equal columns
     html_rows = ["<table>"]
 
-    def wrap(str):
-        return f"<td><code>{escape(str)}</code></td>" if str else "<td></td>"
+    def wrap(desc: str):
+        if not desc:
+            return "<td></td>"
+        _desc = escape(desc)
+        italic_prefix = "italic "
+        if _desc.startswith(italic_prefix):
+            _desc = f"<em>{_desc.replace(italic_prefix, '')}</em>"
+        return f"<td><code>{_desc}</code></td>"
 
     for i in range(third):
         col1 = wrap(result[i])
@@ -163,34 +181,43 @@ zero_desc = "Dot style `0`"
 
 
 def get_version_info(
-    features: list[ast.CharacterVariant] | list[ast.StylisticSet],
+    features: list[ast.FeatureWithDocs],
 ) -> dict[str, dict[str, str]]:
     result = {}
     for item in features:
         if item.version not in result:
             result[item.version] = {}
-        result[item.version][item.tag] = item.sample
-    return result
+        result[item.version][item.tag] = item.example
+    return dict(sorted(result.items()))
 
 
 def get_cv_desc():
     return "\n".join(
-        [cv.desc_item() for cv in cv_list_regular] + [f"- [v7.0] zero: {zero_desc}"]
+        [cv.desc_item() for cv in cv_list_regular()] + [f"- [v7.0] zero: {zero_desc}"]
     )
 
 
 def get_cv_version_info() -> dict[str, dict[str, str]]:
-    return get_version_info(cv_list_regular)
+    return get_version_info(cv_list_regular())
+
+
+italic_code_pattern = re.compile(r"`([^`]+)`")
 
 
 def get_cv_italic_desc():
     return "\n".join(
-        [cv.desc_item() for cv in cv_list_italic if cv.id > 30 and cv.id < 61]
+        [
+            italic_code_pattern.sub(r"_`\1`_", cv.desc_item())
+            for cv in cv_list_italic()
+            if cv.id > 30 and cv.id < 61
+        ]
     )
 
 
 def get_cv_italic_version_info() -> dict[str, dict[str, str]]:
-    return get_version_info([cv for cv in cv_list_italic if cv.id > 30 and cv.id < 61])
+    return get_version_info(
+        [cv for cv in cv_list_italic() if cv.id > 30 and cv.id < 61]
+    )
 
 
 def get_cv_cn_desc():
@@ -203,12 +230,14 @@ def get_cv_cn_version_info() -> dict[str, dict[str, str]]:
 
 def get_ss_desc():
     result = {}
-    for ss in ss_list_regular + ss_list_italic:
+    for ss in ss_list_regular() + ss_list_italic():
         if ss.id not in result:
             desc = ss.desc_item()
 
             if ss.id == 5:
                 desc = desc.replace("`\\\\`", "`\\\\\\\\`")
+            elif ss.id == 6:
+                desc = italic_code_pattern.sub(r"_`\1`_", desc)
 
             result[ss.id] = desc
 
@@ -216,12 +245,16 @@ def get_ss_desc():
 
 
 def get_ss_version_info() -> dict[str, dict[str, str]]:
-    ss = list({s.tag: s for s in ss_list_regular + ss_list_italic}.values())
+    ss = list({s.tag: s for s in ss_list_regular() + ss_list_italic()}.values())
     return get_version_info(sorted(ss, key=lambda x: x.tag))
 
 
 __total_feat_list = (
-    cv_list_regular + cv_list_italic + cv_list_cn + ss_list_regular + ss_list_italic
+    cv_list_regular()
+    + cv_list_italic()
+    + cv_list_cn
+    + ss_list_regular()
+    + ss_list_italic()
 )
 
 
@@ -249,15 +282,15 @@ def get_total_feat_ts() -> str:
 
     feat_dict = dict(sorted(feat_dict.items()))
 
-    js_object = "\n"
+    ts_def_props = "\n"
     for key, val in feat_dict.items():
-        js_object += f"  /** {val} */\n  {key}: string\n"
+        ts_def_props += f"  /** {val} */\n  {key}: string\n"
 
     return f"""// Auto generated by `python task.py fea`
 // @prettier-ignore
 /* eslint-disable */
 
-export interface FeatureDescription {{{js_object}}}
+export interface FeatureDescription {{{ts_def_props}}}
 
 export const featureArray = {json.dumps(list(feat_dict.keys()), indent=2)}
 

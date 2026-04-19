@@ -1,7 +1,7 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono Slim",
-  "use_hinted": false,
+  "family_name": "Maple Mono Slim Hinted",
+  "use_hinted": true,
   "pool_size": 4,
   "enable_ligature": true,
   "ttfautohint_param": {},

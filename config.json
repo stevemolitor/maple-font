@@ -1,7 +1,7 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono Slim Hinted",
-  "use_hinted": true,
+  "family_name": "Maple Mono Special Chars",
+  "use_hinted": false,
   "pool_size": 4,
   "enable_ligature": true,
   "ttfautohint_param": {},
@@ -19,9 +19,9 @@
     "extrabold": 800
   },
   "line_height": 1.0,
-  "width": "slim",
+  "width": "narrow",
   "feature_freeze": {
-    "cv01": "enable",
+    "cv01": "ignore",
     "cv02": "ignore",
     "cv03": "ignore",
     "cv04": "ignore",

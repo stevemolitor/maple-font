@@ -1,7 +1,7 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono Terminal",
-  "use_hinted": true,
+  "family_name": "Maple Mono Normal",
+  "use_hinted": false,
   "pool_size": 4,
   "enable_ligature": true,
   "ttfautohint_param": {},
@@ -21,7 +21,7 @@
   "line_height": 1.0,
   "width": "default",
   "feature_freeze": {
-    "cv01": "ignore",
+    "cv01": "enable",
     "cv02": "ignore",
     "cv03": "ignore",
     "cv04": "ignore",
@@ -49,7 +49,7 @@
     "cv61": "ignore",
     "cv62": "ignore",
     "cv63": "ignore",
-    "cv64": "ignore",
+    "cv64": "enable",
     "cv65": "ignore",
     "cv66": "ignore",
     "cv96": "ignore",
@@ -73,7 +73,7 @@
     "enable": true,
     "version": "3.4.0",
     "mono": false,
-    "propo": false,
+    "propo": true,
     "use_font_patcher": false,
     "glyphs": [
       "--complete"

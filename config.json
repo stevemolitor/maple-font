@@ -21,8 +21,8 @@
   "line_height": 1.0,
   "width": "narrow",
   "feature_freeze": {
-    "cv01": "",
-    "cv02": "enable",
+    "cv01": "enable",
+    "cv02": "ignore",
     "cv03": "ignore",
     "cv04": "ignore",
     "cv05": "ignore",

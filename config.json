@@ -70,10 +70,10 @@
     "zero": "ignore"
   },
   "nerd_font": {
-    "enable": false,
+    "enable": true,
     "version": "3.4.0",
     "mono": false,
-    "propo": true,
+    "propo": false,
     "use_font_patcher": false,
     "glyphs": [
       "--complete"

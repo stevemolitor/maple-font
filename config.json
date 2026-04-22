@@ -1,6 +1,6 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono Steve",
+  "family_name": "Maple Mono Curvy i",
   "use_hinted": false,
   "pool_size": 4,
   "enable_ligature": true,
@@ -23,7 +23,7 @@
   "feature_freeze": {
     "cv01": "enable",
     "cv02": "ignore",
-    "cv03": "ignore",
+    "cv03": "enable",
     "cv04": "ignore",
     "cv05": "ignore",
     "cv06": "ignore",

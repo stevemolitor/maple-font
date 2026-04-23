@@ -1,6 +1,6 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono Curvy i",
+  "family_name": "Maple Mono Lighter",
   "use_hinted": false,
   "pool_size": 4,
   "enable_ligature": true,
@@ -9,21 +9,18 @@
   "infinite_arrow": null,
   "remove_tag_liga": false,
   "weight_mapping": {
-    "thin": 100,
-    "extralight": 200,
-    "light": 300,
-    "regular": 400,
+    "light": 350,
+    "regular": 450,
     "medium": 500,
     "semibold": 600,
-    "bold": 700,
-    "extrabold": 800
+    "bold": 700
   },
   "line_height": 1.0,
   "width": "narrow",
   "feature_freeze": {
     "cv01": "enable",
     "cv02": "ignore",
-    "cv03": "enable",
+    "cv03": "ignore",
     "cv04": "ignore",
     "cv05": "ignore",
     "cv06": "ignore",

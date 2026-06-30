@@ -1,6 +1,6 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono Lighter",
+  "family_name": "Maple Mono for Claude",
   "use_hinted": false,
   "pool_size": 4,
   "enable_ligature": true,

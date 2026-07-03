@@ -11,7 +11,8 @@
   "weight_mapping": {
     "thin": 100,
     "extralight": 200,
-    "light": 350,
+    "light": 300,
+    "semilight": 350,
     "regular": 400,
     "medium": 500,
     "semibold": 600,

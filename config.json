@@ -1,6 +1,6 @@
 {
   "$schema": "./source/schema.json",
-  "family_name": "Maple Mono for Claude",
+  "family_name": "Maple Mono Stock Weights",
   "use_hinted": false,
   "pool_size": 4,
   "enable_ligature": true,
@@ -10,8 +10,8 @@
   "remove_tag_liga": false,
   "weight_mapping": {
     "thin": 100,
-    "extralight": 300,
-    "light": 350,
+    "extralight": 200,
+    "light": 300,
     "regular": 400,
     "medium": 500,
     "semibold": 600,

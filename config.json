@@ -1,6 +1,6 @@
 {
   "$schema": "./sources/schema.json",
-  "family_name": "Maple Mono",
+  "family_name": "Maple Mono v8",
   "font_version": "8.003",
   "formats": [
     "ttf",
